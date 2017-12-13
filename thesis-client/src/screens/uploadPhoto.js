@@ -2,22 +2,22 @@ import React from "react";
 import {
   ActivityIndicator,
   Button,
-  Clipboard,
   Image,
   Share,
   StatusBar,
   StyleSheet,
   Text,
-  TouchableOpacity,
-  View
+  TouchableHighlight,
+  View,
 } from "react-native";
 import Exponent, { Constants, ImagePicker, registerRootComponent } from "expo";
 
 export default class App extends React.Component {
   state = {
     image: null,
-    uploading: false
-  };  
+    uploading: false,
+    imageBase64: null,
+  };
 
   _maybeRenderUploadingOverlay = () => {
     if (this.state.uploading) {
@@ -28,8 +28,8 @@ export default class App extends React.Component {
             {
               backgroundColor: "rgba(0,0,0,0.4)",
               alignItems: "center",
-              justifyContent: "center"
-            }
+              justifyContent: "center",
+            },
           ]}
         >
           <ActivityIndicator color="#fff" animating size="large" />
@@ -48,87 +48,65 @@ export default class App extends React.Component {
       <View
         style={{
           marginTop: 30,
-          width: 250,
+          width: 50,
           borderRadius: 3,
           elevation: 2,
           shadowColor: "rgba(0,0,0,1)",
           shadowOpacity: 0.2,
           shadowOffset: { width: 4, height: 4 },
-          shadowRadius: 5
+          shadowRadius: 5,
         }}
       >
-        <View
-          style={{
-            borderTopRightRadius: 3,
-            borderTopLeftRadius: 3,
-            overflow: "hidden"
-          }}
+        <TouchableHighlight
+          onPress={() => this._share()}
         >
-          <Image source={{ uri: image }} style={{ width: 250, height: 250 }} />
-        </View>
-
-        <Text
-          onPress={this._copyToClipboard}
-          onLongPress={this._share}
-          style={{ paddingVertical: 10, paddingHorizontal: 10 }}
-        >
-          {image}
-        </Text>
+          <Image source={{ uri: image }} style={{ width: 50, height: 50 }} />
+        </TouchableHighlight>
       </View>
     );
   };
 
   _share = () => {
     Share.share({
-      message: this.state.image,
+      message: 'New Route on BIKE MAP NOLA!',
       title: "Check out this photo",
-      url: this.state.image
+      url: this.state.image,
     });
-  };
-
-  _copyToClipboard = () => {
-    Clipboard.setString(this.state.image);
-    alert("Copied image URL to clipboard");
   };
 
   _takePhoto = async () => {
-    let pickerResult = await ImagePicker.launchCameraAsync({
+    let imageTaken = await ImagePicker.launchCameraAsync({
       allowsEditing: true,
-      aspect: [4, 3]
+      aspect: [4, 3],
+      base64: true,
     });
-
-    this._handleImagePicked(pickerResult);
+    this._handleImagePicked(imageTaken);
   };
 
   _pickImage = async () => {
-    let pickerResult = await ImagePicker.launchImageLibraryAsync({
+    let imagePicked = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
-      aspect: [4, 3]
+      aspect: [4, 3],
+      base64: true,
     });
-
-    this._handleImagePicked(pickerResult);
+    this._handleImagePicked(imagePicked);
   };
 
-  _handleImagePicked = async pickerResult => {
-    let uploadResponse, uploadResult;
-
+  _handleImagePicked = async imageResult => {    
     try {
       this.setState({ uploading: true });
 
-      if (!pickerResult.cancelled) {
-        uploadResponse = await uploadImageAsync(pickerResult.uri);
-        uploadResult = await uploadResponse.json();
-        this.setState({ image: uploadResult.location });
+      if (!imageResult.cancelled) {
+        this.setState({ image: imageResult.uri, imageBase64: imageResult.base64 });
       }
     } catch (e) {
-      console.log({ uploadResponse });
-      console.log({ uploadResult });
       console.log({ e });
       alert("Upload failed, sorry :(");
     } finally {
       this.setState({ uploading: false });
     }
   };
+
   render() {
     let { image } = this.state;
 
@@ -139,18 +117,14 @@ export default class App extends React.Component {
             fontSize: 20,
             marginBottom: 20,
             textAlign: "center",
-            marginHorizontal: 15
+            marginHorizontal: 15,
           }}
-        >
-          Example: Upload ImagePicker result
-        </Text>
-
+        />
         <Button
           onPress={this._pickImage}
-          title="Pick an image from camera roll"
+          title="Upload Photo"
         />
-
-        <Button onPress={this._takePhoto} title="Take a photo" />
+        <Button onPress={this._takePhoto} title="Take Photo" />
 
         {this._maybeRenderImage()}
         {this._maybeRenderUploadingOverlay()}
@@ -159,38 +133,4 @@ export default class App extends React.Component {
       </View>
     );
   }
-}
-
-async function uploadImageAsync(uri) {
-  let apiUrl = "https://file-upload-example-backend-dkhqoilqqn.now.sh/upload";
-
-  // Note:
-  // Uncomment this if you want to experiment with local server
-  //
-  // if (Constants.isDevice) {
-  //   apiUrl = `https://your-ngrok-subdomain.ngrok.io/upload`;
-  // } else {
-  //   apiUrl = `http://localhost:3000/upload`
-  // }
-
-  let uriParts = uri.split(".");
-  let fileType = uri[uri.length - 1];
-
-  let formData = new FormData();
-  formData.append("photo", {
-    uri,
-    name: `photo.${fileType}`,
-    type: `image/${fileType}`
-  });
-
-  let options = {
-    method: "POST",
-    body: formData,
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "multipart/form-data"
-    }
-  };
-
-  return fetch(apiUrl, options);
 }
