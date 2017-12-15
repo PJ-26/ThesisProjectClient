@@ -87,7 +87,7 @@ const RootNavigator = TabNavigator(
       style: {
         // Currently there is no great way to center two tab icons, so we do
         // it manually here by assuming that each tab icon is about 125 points wide
-        paddingHorizontal: (Dimensions.get('window').width - 225) / 2,
+        paddingHorizontal: (Dimensions.get('window').width - 325) / 4,
         backgroundColor: appColors.navyBlue,
         height: 55,
       },

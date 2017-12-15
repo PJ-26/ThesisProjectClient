@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
   },
   image: {
     zIndex: 1,
-    width: 320,
+    width: 320  ,
     height: 330,
     borderRadius: 6,
     borderWidth: 4,
