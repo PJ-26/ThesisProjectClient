@@ -11,6 +11,7 @@ const ProfileStats = ({ sessions }) => {
     prev.total_distance = (prev.total_distance || 0) + Number(current.distance);
     prev.total_calories = (prev.total_calories || 0) + Number(current.distance) * 40;
     if (i === a.length - 1) {
+      prev.total_distance = Math.round(prev.total_distance * 100) / 100;
       prev.total_sessions = a.length;
       prev.average_time = prev.total_time / a.length;
       prev.average_distance = prev.total_distance / a.length;
@@ -19,12 +20,12 @@ const ProfileStats = ({ sessions }) => {
     return prev;
   }, {});
 
-  if (String(total.total_distance)[0] === '0') {
-    total.total_distance = total.total_distance.substring(1);
-  }
-  if (String(total.total_time)[0] === '0') {
-    total.total_time = total.total_time.substring(1);    
-  }
+  // if (String(total.total_distance)[0] === '0') {
+  //   total.total_distance = total.total_distance.substring(1);
+  // }
+  // if (String(total.total_time)[0] === '0') {
+  //   total.total_time = total.total_time.substring(1);    
+  // }
   return  (
     <View style={styles.mainContainer}>
       <View style={styles.header}>

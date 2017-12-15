@@ -1,5 +1,7 @@
 # __bikeMap__
 
+<img src="thesis-client/src/assets/images/bikemap_logo.png" style="width: 400px;"/>
+
 ##### *A bike route mapping app*
 
 ### Features:
@@ -9,8 +11,10 @@
 * Stores sessions from using routes and displays statistics about the user
 * Gives the user ability favorite routes and use them again
 * Uses Facebook for it's authentication, enabling users to use an existing account
-#### Live example
-expo: 
+<!-- #### Live example
+expo:  -->
+### __Wireframe__
+![alt text](./docs/wireframe.png "Wireframe")
 
 ### __Database__
 ![alt text](./docs/image.png "Database Schema")
