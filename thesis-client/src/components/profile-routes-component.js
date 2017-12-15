@@ -19,6 +19,14 @@ const HeartIcon = () => (
   />
 );
 
+const TrashIcon = () => (
+  <Ionicons
+    name="ios-trash"
+    size={35}
+    style={{color: appColors.begonia}}
+  />
+);
+
 const BackgroundHeartIcon = ({ favorite }) => (
   <Ionicons
     name="ios-heart"
@@ -29,7 +37,9 @@ const BackgroundHeartIcon = ({ favorite }) => (
   />
 );
 
-const ProfileRoutes = ({routes, showTripLocation, navigate}) => {  
+const ProfileRoutes = ({
+  routes, showTripLocation, navigate, deleteUserRoute, user,
+}) => {
   const goToMap = () => {
     navigate('Map');
   };
@@ -44,6 +54,11 @@ const ProfileRoutes = ({routes, showTripLocation, navigate}) => {
         style={styles.container}
         key={trip.id}
       >
+        <TouchableOpacity
+          onPress={() => deleteUserRoute(user.id, trip.id)}
+        >
+          <TrashIcon />
+        </TouchableOpacity>
         <View style={styles.textContainer}>
           <Text style={styles.title}>{trip.display_name}</Text>
           <Text style={styles.startingAddress}>{trip.route_name}</Text>

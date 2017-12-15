@@ -48,6 +48,7 @@ import {
   GET_USER_FAVORITES_SUCCESS,
   GET_USER_FAVORITES,
   REMOVE_FAVORITE,
+  DELETE_USER_TRIP,
   } from '../constants';
 import { GOOGLE_API_KEY } from '../../config';
 
@@ -298,6 +299,19 @@ const getUserTrips = function* ({ payload: { userId } }) {
   }
 };
 
+const removeUserTrip = function* ({ payload: { userId, routeId } }) {
+  const filter = {
+    id_user_account: userId,
+    id: routeId,
+  };
+  try {
+    const removeUserRequest = yield call(dbSecureDELETE, 'route', filter);
+    yield put({type: GET_USER_TRIPS_SUCCESS, payload: removeUserRequest});
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 const getUserSessions = function* ({ payload: { userId } }) {
   let filter = {
     id_user_account: userId,
@@ -372,6 +386,10 @@ const watchCreateTrip = function* () {
   }
 };
 
+const watchRemoveTrip = function* () {
+  yield takeEvery(DELETE_USER_TRIP, removeUserTrip);
+};
+
 const watchSaveTrip = function* () {
   yield takeLatest(CREATE_TRIP_SAVE, saveTripAsync);
 };
@@ -441,7 +459,8 @@ const rootSaga = function* () {
     watchRemoveFavorite(),
     watchGetUserPhotos(),
     watchUserTripsSuccess(),
+    watchRemoveTrip(),
   ]);
 };
 
-export { rootSaga, watchGetTrips, watchGetUserLocation, watchGetDirections, watchUserTrips, watchUserSessions, watchPostFavorite, watchGetFavorite, watchRemoveFavorite, watchUserTripsSuccess  };
+export { rootSaga, watchGetTrips, watchGetUserLocation, watchGetDirections, watchUserTrips, watchUserSessions, watchPostFavorite, watchGetFavorite, watchRemoveFavorite, watchUserTripsSuccess, watchRemoveTrip };

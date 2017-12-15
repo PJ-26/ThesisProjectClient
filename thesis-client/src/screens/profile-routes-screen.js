@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { connect } from "react-redux";
-import { getUserRoutes, getUserSessions } from "../actions/getUserInfo-action";
+import { getUserRoutes, getUserSessions, removeUserTrip } from "../actions/getUserInfo-action";
 import { getActiveTrip } from "../actions/activeTrip-action";
 import { appColors } from '../constants';
 import ProfileRoutes from "../components/profile-routes-component";
@@ -38,6 +38,7 @@ class ProfileRoutesScreen extends Component {
     showTripLocation: PropTypes.func.isRequired,
     navigation: PropTypes.shape({}).isRequired,
     getUserRoutes: PropTypes.func.isRequired,
+    deleteUserRoute: PropTypes.func.isRequired,
     //eslint-disable-next-line
     user: PropTypes.object.isRequired,
     // eslint-disable-next-line
@@ -62,6 +63,8 @@ class ProfileRoutesScreen extends Component {
       <View>
         <ScrollView>
           <ProfileRoutes
+            user={this.props.user}
+            deleteUserRoute={this.props.deleteUserRoute}
             routes={this.props.routes}
             navigate={this.props.navigation.navigate}
             showTripLocation={this.props.showTripLocation}
@@ -89,7 +92,10 @@ const mapDispatchToProps = dispatch => ({
   },
   getUserRoutes: userId => {
     dispatch(getUserRoutes(userId));
-  }
+  },
+  deleteUserRoute: (userId, routeId) => {
+    dispatch(removeUserTrip(userId, routeId));
+  },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProfileRoutesScreen);

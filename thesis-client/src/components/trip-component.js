@@ -40,22 +40,23 @@ const Trip = ({
   const goToMap = () => {
     navigate('Map');
   };
+
   const favoriteId = favorites.reduce((prev, current) => {
     prev[current.id] = true;
     return prev;
   }, {});
-  const createTrip = () => trips.map(trip => {
+  const createTrip = () => trips.map((trip, index) => {
     const {
       photo_url,
       id,
       route_name,
       current_rating,
       display_name,
-      favorite_count,
       route_preview,
     } = trip;
+    let { favorite_count } = trip;
 
-    let action = favoriteId[id] ? () => deleteFavorite(user.id, id) : () => addFavorite(user.id, id);
+    let action = favoriteId[id] ? () => { trips[index].favorite_count -= 1; deleteFavorite(user.id, id); } : () => { trips[index].favorite_count += 1; addFavorite(user.id, id); };
     return (
       <ImageBackground
         key={id}

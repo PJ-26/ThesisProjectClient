@@ -1,4 +1,4 @@
-import { GET_USER_TRIPS, GET_USER_SESSIONS, GET_USER_FAVORITES } from '../constants';
+import { GET_USER_TRIPS, GET_USER_SESSIONS, GET_USER_FAVORITES, DELETE_USER_TRIP } from '../constants';
 
 export const getUserRoutes = (userId) => ({
     type: GET_USER_TRIPS,
@@ -19,4 +19,12 @@ export const getUserFavorites = (userId) => ({
     payload: {
         userId,
     },
+ });
+
+ export const removeUserTrip = (userId, routeId) => ({
+     type: DELETE_USER_TRIP,
+     payload: {
+         userId,
+         routeId,
+     },
  });
