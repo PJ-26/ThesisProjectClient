@@ -7,9 +7,9 @@ import { appColors, appColorsTransparency } from "../constants";
 const ProfileStats = ({ sessions }) => {
 
   const total = sessions.reduce((prev, current, i, a) => {
-    prev.total_time = (prev.total_time || 0) + current.time;
-    prev.total_distance = (prev.total_distance || 0) + current.distance;
-    prev.total_calories = (prev.total_calories || 0) + current.distance * 40;
+    prev.total_time = (prev.total_time || 0) + Number(current.time);
+    prev.total_distance = (prev.total_distance || 0) + Number(current.distance);
+    prev.total_calories = (prev.total_calories || 0) + Number(current.distance) * 40;
     if (i === a.length - 1) {
       prev.total_sessions = a.length;
       prev.average_time = prev.total_time / a.length;
